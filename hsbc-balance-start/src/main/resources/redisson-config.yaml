@@ -1,0 +1,4 @@
+# Redisson 配置
+singleServerConfig:
+  address: "redis://r-2zedi0v1p6dmk5eehgpd.redis.rds.aliyuncs.com:${REDIS_PORT:-6379}"
+  password: r-2zedi0v1p6dmk5eehg:hsbc@123456

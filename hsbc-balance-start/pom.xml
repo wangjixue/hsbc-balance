@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.hsbc.balance</groupId>
+        <artifactId>hsbc-balance-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>hsbc-balance-start</artifactId>
+    <packaging>jar</packaging>
+    <name>start</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.hsbc.balance</groupId>
+            <artifactId>hsbc-balance-adapter</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <resources>
+            <!-- 包含 Java 目录下的 XML -->
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <!-- 默认包含资源目录 -->
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.hsbc.balance.Application</mainClass> <!-- 指定主类 -->
+                    <excludeDevtools>true</excludeDevtools> <!-- 排除 spring-boot-devtools 依赖 -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

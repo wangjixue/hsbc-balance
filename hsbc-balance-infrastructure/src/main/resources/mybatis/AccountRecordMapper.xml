@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hsbc.balance.repository.mapper.AccountRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.hsbc.balance.repository.AccountRecordDO">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="recordId" column="record_id" jdbcType="VARCHAR"/>
+            <result property="accountId" column="account_id" jdbcType="VARCHAR"/>
+            <result property="balance" column="balance" jdbcType="DECIMAL"/>
+            <result property="version" column="version" jdbcType="BIGINT"/>
+            <result property="created" column="created" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="SMALLINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,record_id,account_id,balance,version,created,
+        is_deleted
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from account_record
+        where  id = #{id,jdbcType=BIGINT} 
+    </select>
+    <select id="findAccountByIdWithLatestVersion" resultMap="BaseResultMap"
+            parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from account_record
+        where account_id = #{accountId,jdbcType=VARCHAR}
+        order by version desc
+        limit 0,1
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from account_record
+        where  id = #{id,jdbcType=BIGINT} 
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.hsbc.balance.repository.AccountRecordDO" useGeneratedKeys="true">
+        insert into account_record
+        ( id,record_id,account_id,balance,version,created,
+        is_deleted)
+        values (#{id,jdbcType=BIGINT},#{recordId,jdbcType=VARCHAR},#{accountId,jdbcType=VARCHAR},#{balance,jdbcType=DECIMAL},#{version,jdbcType=BIGINT},#{created,jdbcType=TIMESTAMP},
+        #{isDeleted,jdbcType=SMALLINT})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.hsbc.balance.repository.AccountRecordDO" useGeneratedKeys="true">
+        insert into account_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="recordId != null">record_id,</if>
+                <if test="accountId != null">account_id,</if>
+                <if test="balance != null">balance,</if>
+                <if test="version != null">version,</if>
+                <if test="created != null">created,</if>
+                <if test="isDeleted != null">is_deleted,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id,jdbcType=BIGINT},</if>
+                <if test="recordId != null">#{recordId,jdbcType=VARCHAR},</if>
+                <if test="accountId != null">#{accountId,jdbcType=VARCHAR},</if>
+                <if test="balance != null">#{balance,jdbcType=DECIMAL},</if>
+                <if test="version != null">#{version,jdbcType=BIGINT},</if>
+                <if test="created != null">#{created,jdbcType=TIMESTAMP},</if>
+                <if test="isDeleted != null">#{isDeleted,jdbcType=SMALLINT},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hsbc.balance.repository.AccountRecordDO">
+        update account_record
+        <set>
+                <if test="recordId != null">
+                    record_id = #{recordId,jdbcType=VARCHAR},
+                </if>
+                <if test="accountId != null">
+                    account_id = #{accountId,jdbcType=VARCHAR},
+                </if>
+                <if test="balance != null">
+                    balance = #{balance,jdbcType=DECIMAL},
+                </if>
+                <if test="version != null">
+                    version = #{version,jdbcType=BIGINT},
+                </if>
+                <if test="created != null">
+                    created = #{created,jdbcType=TIMESTAMP},
+                </if>
+                <if test="isDeleted != null">
+                    is_deleted = #{isDeleted,jdbcType=SMALLINT},
+                </if>
+        </set>
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hsbc.balance.repository.AccountRecordDO">
+        update account_record
+        set 
+            record_id =  #{recordId,jdbcType=VARCHAR},
+            account_id =  #{accountId,jdbcType=VARCHAR},
+            balance =  #{balance,jdbcType=DECIMAL},
+            version =  #{version,jdbcType=BIGINT},
+            created =  #{created,jdbcType=TIMESTAMP},
+            is_deleted =  #{isDeleted,jdbcType=SMALLINT}
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+</mapper>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hsbc.balance.repository.mapper.TransactionMapper">
+
+    <resultMap id="BaseResultMap" type="com.hsbc.balance.repository.TransactionDO">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="transactionId" column="transaction_id" jdbcType="VARCHAR"/>
+            <result property="sourceAccountId" column="source_account_id" jdbcType="VARCHAR"/>
+            <result property="targetAccountId" column="target_account_id" jdbcType="VARCHAR"/>
+            <result property="amount" column="amount" jdbcType="DECIMAL"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="failedReason" column="failed_reason" jdbcType="VARCHAR"/>
+            <result property="created" column="created" jdbcType="TIMESTAMP"/>
+            <result property="modified" column="modified" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="SMALLINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,transaction_id,source_account_id,target_account_id,amount,status,
+        failed_reason,created,modified,is_deleted
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from transaction
+        where  id = #{id,jdbcType=BIGINT} 
+    </select>
+    <select id="findByTransactionId" resultMap="BaseResultMap"
+            parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from transaction
+        where transaction_id = #{transactionId,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from transaction
+        where  id = #{id,jdbcType=BIGINT} 
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.hsbc.balance.repository.TransactionDO" useGeneratedKeys="true">
+        insert into transaction
+        ( id,transaction_id,source_account_id,target_account_id,amount,status,
+        failed_reason,created,modified,is_deleted)
+        values (#{id,jdbcType=BIGINT},#{transactionId,jdbcType=VARCHAR},#{sourceAccountId,jdbcType=VARCHAR},#{targetAccountId,jdbcType=VARCHAR},#{amount,jdbcType=DECIMAL},#{status,jdbcType=INTEGER},
+        #{failedReason,jdbcType=VARCHAR},#{created,jdbcType=TIMESTAMP},#{modified,jdbcType=TIMESTAMP},#{isDeleted,jdbcType=SMALLINT})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.hsbc.balance.repository.TransactionDO" useGeneratedKeys="true">
+        insert into transaction
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="transactionId != null">transaction_id,</if>
+                <if test="sourceAccountId != null">source_account_id,</if>
+                <if test="targetAccountId != null">target_account_id,</if>
+                <if test="amount != null">amount,</if>
+                <if test="status != null">status,</if>
+                <if test="failedReason != null">failed_reason,</if>
+                <if test="created != null">created,</if>
+                <if test="modified != null">modified,</if>
+                <if test="isDeleted != null">is_deleted,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id,jdbcType=BIGINT},</if>
+                <if test="transactionId != null">#{transactionId,jdbcType=VARCHAR},</if>
+                <if test="sourceAccountId != null">#{sourceAccountId,jdbcType=VARCHAR},</if>
+                <if test="targetAccountId != null">#{targetAccountId,jdbcType=VARCHAR},</if>
+                <if test="amount != null">#{amount,jdbcType=DECIMAL},</if>
+                <if test="status != null">#{status,jdbcType=INTEGER},</if>
+                <if test="failedReason != null">#{failedReason,jdbcType=VARCHAR},</if>
+                <if test="created != null">#{created,jdbcType=TIMESTAMP},</if>
+                <if test="modified != null">#{modified,jdbcType=TIMESTAMP},</if>
+                <if test="isDeleted != null">#{isDeleted,jdbcType=SMALLINT},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hsbc.balance.repository.TransactionDO">
+        update transaction
+        <set>
+                <if test="transactionId != null">
+                    transaction_id = #{transactionId,jdbcType=VARCHAR},
+                </if>
+                <if test="sourceAccountId != null">
+                    source_account_id = #{sourceAccountId,jdbcType=VARCHAR},
+                </if>
+                <if test="targetAccountId != null">
+                    target_account_id = #{targetAccountId,jdbcType=VARCHAR},
+                </if>
+                <if test="amount != null">
+                    amount = #{amount,jdbcType=DECIMAL},
+                </if>
+                <if test="status != null">
+                    status = #{status,jdbcType=INTEGER},
+                </if>
+                <if test="failedReason != null">
+                    failed_reason = #{failedReason,jdbcType=VARCHAR},
+                </if>
+                <if test="created != null">
+                    created = #{created,jdbcType=TIMESTAMP},
+                </if>
+                <if test="modified != null">
+                    modified = #{modified,jdbcType=TIMESTAMP},
+                </if>
+                <if test="isDeleted != null">
+                    is_deleted = #{isDeleted,jdbcType=SMALLINT},
+                </if>
+        </set>
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hsbc.balance.repository.TransactionDO">
+        update transaction
+        set 
+            transaction_id =  #{transactionId,jdbcType=VARCHAR},
+            source_account_id =  #{sourceAccountId,jdbcType=VARCHAR},
+            target_account_id =  #{targetAccountId,jdbcType=VARCHAR},
+            amount =  #{amount,jdbcType=DECIMAL},
+            status =  #{status,jdbcType=INTEGER},
+            failed_reason =  #{failedReason,jdbcType=VARCHAR},
+            created =  #{created,jdbcType=TIMESTAMP},
+            modified =  #{modified,jdbcType=TIMESTAMP},
+            is_deleted =  #{isDeleted,jdbcType=SMALLINT}
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+    <update id="updateStatusByTransactionId">
+        update transaction
+        set
+            status =  #{status,jdbcType=INTEGER},
+            <if test="failedReason != null">
+                failed_reason = #{failedReason,jdbcType=VARCHAR},
+            </if>
+            modified =  now()
+        where   transaction_id = #{transactionId,jdbcType=VARCHAR}
+    </update>
+</mapper>
