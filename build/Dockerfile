@@ -16,8 +16,14 @@ RUN yum -y update && \
     yum -y install wget unzip tar which && \
     yum clean all
 
-# 安装 OpenJDK 17
-RUN yum -y install java-17-openjdk-devel && \
+# 安装 Adoptium 的 GPG 密钥
+RUN rpm --import https://packages.adoptium.net/artifactory/api/gpg/key/public
+
+# 添加 Adoptium 软件源
+RUN curl -L -o /etc/yum.repos.d/adoptium.repo https://packages.adoptium.net/artifactory/rpm/centos/7/x86_64/adoptium.repo
+
+# 安装 JDK 17
+RUN yum -y install temurin-17-jdk && \
     yum clean all
 
 # 设置 JAVA_HOME 环境变量
@@ -38,13 +44,13 @@ RUN yum -y install git && \
     yum clean all
 
 # 创建工作目录
-WORKDIR /app
+#WORKDIR /app
 
 # 从 GitHub 拉取代码
-RUN git clone https://github.com/wangjixue/hsbc-balance.git
+#RUN git clone https://github.com/wangjixue/hsbc-balance.git
 
 # 进入项目目录
-WORKDIR /app/hsbc-balance
+#WORKDIR /app/hsbc-balance
 
 # 使用 Maven 构建项目
 RUN mvn clean package -DskipTests
