@@ -49,8 +49,8 @@ ENV MAVEN_HOME /opt/apache-maven-3.8.8
 ENV PATH $PATH:$MAVEN_HOME/bin
 
 # 安装 Git
-RUN yum -y install git && \
-    yum clean all
+#RUN yum -y install git && \
+#    yum clean all
 
 # 创建工作目录
 #WORKDIR /app
