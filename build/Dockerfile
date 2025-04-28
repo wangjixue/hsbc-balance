@@ -34,7 +34,7 @@ RUN yum -y install temurin-17-jdk && \
 RUN java -version
 
 # 设置 JAVA_HOME 环境变量
-ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk
+ENV JAVA_HOME /usr/lib/jvm/temurin-17-jdk
 ENV PATH $PATH:$JAVA_HOME/bin
 
 RUN java -version
