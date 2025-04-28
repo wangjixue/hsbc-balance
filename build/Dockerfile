@@ -49,17 +49,17 @@ ENV MAVEN_HOME /opt/apache-maven-3.8.8
 ENV PATH $PATH:$MAVEN_HOME/bin
 
 # 安装 Git
-#RUN yum -y install git && \
-#    yum clean all
+RUN yum -y install git && \
+    yum clean all
 
 # 创建工作目录
-#WORKDIR /app
+WORKDIR /app
 
 # 从 GitHub 拉取代码
-#RUN git clone https://github.com/wangjixue/hsbc-balance.git
+RUN git clone https://github.com/wangjixue/hsbc-balance.git
 
 # 进入项目目录
-#WORKDIR /app/hsbc-balance
+WORKDIR /app/hsbc-balance
 
 # 使用 Maven 构建项目
 RUN mvn clean package -DskipTests
