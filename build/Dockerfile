@@ -31,13 +31,13 @@ RUN echo '[Adoptium]' > /etc/yum.repos.d/adoptium.repo && \
 RUN yum -y install temurin-17-jdk && \
     yum clean all
 
-RUN java -version
-
 # 设置 JAVA_HOME 环境变量
 ENV JAVA_HOME /usr/lib/jvm/temurin-17-jdk
 ENV PATH $PATH:$JAVA_HOME/bin
 
-RUN java -version
+RUN pwd
+
+RUN ls -l
 
 # 下载并安装 Maven 3.8.8
 RUN wget https://dlcdn.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz && \
