@@ -57,6 +57,9 @@ RUN git clone https://github.com/wangjixue/hsbc-balance.git
 # 进入项目目录
 WORKDIR /app/hsbc-balance
 
+# 切换到 master 分支
+RUN git checkout master
+
 RUN pwd
 
 RUN ls -l
