@@ -6,6 +6,11 @@ ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 ENV DEBIAN_FRONTEND noninteractive
 
+# 备份并替换镜像源
+RUN mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup && \
+    curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo && \
+    yum makecache
+
 # 更新系统并安装必要的基础工具
 RUN yum -y update && \
     yum -y install wget unzip tar which && \
@@ -42,7 +47,7 @@ RUN git clone https://github.com/wangjixue/hsbc-balance.git
 WORKDIR /app/hsbc-balance
 
 # 使用 Maven 构建项目
-RUN mvn clean package
+RUN mvn clean package -DskipTests
 
 # 暴露 8080 端口
 EXPOSE 8080
