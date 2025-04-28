@@ -19,8 +19,13 @@ RUN yum -y update && \
 # 安装 Adoptium 的 GPG 密钥
 RUN rpm --import https://packages.adoptium.net/artifactory/api/gpg/key/public
 
-# 添加 Adoptium 软件源
-RUN curl -L -o /etc/yum.repos.d/adoptium.repo https://packages.adoptium.net/artifactory/rpm/centos/7/x86_64/adoptium.repo
+# 手动创建 adoptium.repo 文件
+RUN echo '[Adoptium]' > /etc/yum.repos.d/adoptium.repo && \
+    echo 'name=Adoptium' >> /etc/yum.repos.d/adoptium.repo && \
+    echo 'baseurl=https://packages.adoptium.net/artifactory/rpm/centos/7/x86_64' >> /etc/yum.repos.d/adoptium.repo && \
+    echo 'enabled=1' >> /etc/yum.repos.d/adoptium.repo && \
+    echo 'gpgcheck=1' >> /etc/yum.repos.d/adoptium.repo && \
+    echo 'gpgkey=https://packages.adoptium.net/artifactory/api/gpg/key/public' >> /etc/yum.repos.d/adoptium.repo
 
 # 安装 JDK 17
 RUN yum -y install temurin-17-jdk && \
