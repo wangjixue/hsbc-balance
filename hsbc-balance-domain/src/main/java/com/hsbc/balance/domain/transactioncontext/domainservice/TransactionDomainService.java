@@ -54,7 +54,6 @@ public class TransactionDomainService {
      *
      * @param transactionBO 交易命令对象，包含交易的详细信息。
      */
-    @Transactional
     @LogMonitor
     public void processTransaction(TransactionBO transactionBO) {
 

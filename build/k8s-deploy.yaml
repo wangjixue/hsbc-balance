@@ -1,0 +1,140 @@
+# 定义 Deployment 资源，用于部署应用并管理其副本
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Deployment 的名称，用于唯一标识该 Deployment
+  name: hsbc-balance-deploy
+  # 为 Deployment 添加标签，方便后续的资源选择和管理
+  labels:
+    app: hsbc-balance
+spec:
+  # 初始部署的应用副本数量
+  replicas: 2
+  # 配置部署策略为滚动更新，每次更新一台 Pod
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # 最多允许超出期望副本数的 Pod 数量，设置为 1 表示每次只新增 1 个新 Pod
+      maxSurge: 1
+      # 最多允许不可用的 Pod 数量，设置为 0 表示在更新过程中不能有不可用的 Pod
+      maxUnavailable: 1
+  selector:
+    # 定义标签选择器，用于选择匹配的 Pod
+    matchLabels:
+      app: hsbc-balance
+  template:
+    metadata:
+      # 为 Pod 模板添加标签，与上面的选择器匹配
+      labels:
+        app: hsbc-balance
+    spec:
+      containers:
+        - # 容器的名称
+          name: hsbc-balance-container
+          image: crpi-lx11ss3foy7y52k8-vpc.cn-beijing.personal.cr.aliyuncs.com/hsbc-balance/hsbc-balance:v1
+          ports:
+            - # 容器内应用监听的端口
+              containerPort: 8080
+          # 使用的 Docker 镜像
+          resources:
+            requests:
+              # 容器请求的 CPU 资源，200m 表示 0.2 个 CPU 核心
+              cpu: "2000m"
+              # 容器请求的内存资源，256Mi 表示 256 MiB
+              memory: "256Mi"
+              # 容器请求的临时存储资源，4Gi 表示 4 Gibibytes
+              ephemeral-storage: 2Gi
+            limits:
+              # 容器使用的 CPU 资源上限，500m 表示 0.5 个 CPU 核心
+              cpu: "500m"
+              # 容器使用的内存资源上限，512Mi 表示 512 MiB
+              memory: "512Mi"
+              # 容器使用的临时存储资源上限，4Gi 表示 4 Gibibytes
+              ephemeral-storage: 2Gi
+          readinessProbe:
+            # 使用 HTTP GET 请求进行就绪检查
+            httpGet:
+              # 就绪检查的路径，需根据实际应用修改
+              path: /health
+              # 就绪检查的端口
+              port: 8080
+            # 容器启动后，首次进行就绪检查的延迟时间（秒）
+            initialDelaySeconds: 10
+            # 就绪检查的周期（秒）
+            periodSeconds: 5
+          livenessProbe:
+            # 使用 HTTP GET 请求进行存活检查
+            httpGet:
+              # 存活检查的路径，需根据实际应用修改
+              path: /health
+              # 存活检查的端口
+              port: 8080
+            # 容器启动后，首次进行存活检查的延迟时间（秒）
+            initialDelaySeconds: 15
+            # 存活检查的周期（秒）
+            periodSeconds: 10
+
+---
+# 定义 Horizontal Pod Autoscaler 资源，用于实现应用的动态扩缩容
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  # HPA 的名称，用于唯一标识该 HPA
+  name: hsbc-balance-hpa
+spec:
+  scaleTargetRef:
+    # 目标资源的 API 版本
+    apiVersion: apps/v1
+    # 目标资源的类型，这里是 Deployment
+    kind: Deployment
+    # 目标资源的名称，即要进行扩缩容的 Deployment
+    name: hsbc-balance-deploy
+  # 允许的最小副本数量
+  minReplicas: 2
+  # 允许的最大副本数量
+  maxReplicas: 10
+  metrics:
+    - # 指标类型为资源指标
+      type: Resource
+      resource:
+        # 具体的资源指标为 CPU
+        name: cpu
+        target:
+          # 目标类型为利用率
+          type: Utilization
+          # 平均 CPU 利用率的目标值，当达到该值时触发扩缩容
+          averageUtilization: 80
+    - # 指标类型为资源指标
+      type: Resource
+      resource:
+        # 具体的资源指标为内存
+        name: memory
+        target:
+          # 目标类型为利用率
+          type: Utilization
+          # 平均内存利用率的目标值，当达到该值时触发扩缩容
+          averageUtilization: 90
+
+---
+# 定义 Service 资源，使用 NodePort 类型实现外部访问
+apiVersion: v1
+kind: Service
+metadata:
+  # Service 的名称
+  name: hsbc-balance-service
+  labels:
+    app: hsbc-balance
+spec:
+  # 使用 NodePort 类型，Kubernetes 会在每个节点上开放一个端口
+  type: NodePort
+  selector:
+    # 选择具有该标签的 Pod 作为后端服务
+    app: hsbc-balance
+  ports:
+    - protocol: TCP
+      # Service 暴露的端口，集群内部可通过此端口访问服务
+      port: 80
+      # 转发到后端 Pod 的端口
+      targetPort: 8080
+      # 节点上开放的端口，外部可通过 节点IP:nodePort 访问服务，可手动指定或由 Kubernetes 自动分配
+      nodePort: 30080

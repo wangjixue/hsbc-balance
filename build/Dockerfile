@@ -35,10 +35,6 @@ RUN yum -y install temurin-17-jdk && \
 ENV JAVA_HOME /usr/lib/jvm/temurin-17-jdk
 ENV PATH $PATH:$JAVA_HOME/bin
 
-RUN pwd
-
-RUN ls -l
-
 # 下载并安装 Maven 3.8.8
 RUN wget https://dlcdn.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz && \
     tar -zxvf apache-maven-3.8.8-bin.tar.gz -C /opt && \
@@ -60,6 +56,9 @@ RUN git clone https://github.com/wangjixue/hsbc-balance.git
 
 # 进入项目目录
 WORKDIR /app/hsbc-balance
+
+# 切换到 master 分支
+RUN git checkout master
 
 # 使用 Maven 构建项目
 RUN mvn clean package -DskipTests
